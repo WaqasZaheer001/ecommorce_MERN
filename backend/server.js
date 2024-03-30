@@ -1,15 +1,15 @@
-// server.js
-
 const express = require('express');
 const mongoose = require('mongoose');
-require('dotenv').config(); // Load environment variables from .env file
-const { isAdmin } = require('./middleware/isAdmin'); // Import isAdmin middleware
+require('dotenv').config();
+const { isAdmin } = require('./middleware/isAdmin');
+const cors = require('cors'); // Import cors middleware
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(express.json());
+app.use(cors()); // Enable CORS for all requests
 
 // Connect to MongoDB
 mongoose.connect(process.env.DB_URI, {
@@ -21,7 +21,6 @@ mongoose.connect(process.env.DB_URI, {
 
 // Routes
 const authRoutes = require('./routes/authRoutes');
-// const adminRoutes = require('./routes/adminRoutes'); // Removed import statement for adminRoutes.js
 const categoryRoutes = require('./routes/categoryRoutes');
 const productRoutes = require('./routes/productRoutes');
 
@@ -30,8 +29,7 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/products', productRoutes);
 
 // Apply isAdmin middleware to admin-specific routes
-app.use('/api/admin', isAdmin); // Apply isAdmin middleware to all routes under /api/admin
-// app.use('/api/admin', adminRoutes); // Removed mounting of adminRoutes
+app.use('/api/admin', isAdmin);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

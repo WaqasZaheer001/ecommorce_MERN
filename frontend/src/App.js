@@ -1,25 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+// App.js
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import LoginAdmin from './pages/LoginAdmin';
+import AdminDashboardHome from './pages/AdminDashboardHome';
+import SignupAdmin from './pages/SignupAdmin';
+import CategoryList from './pages/CategoryList';
+import CategoryForm from './pages/CategoryForm';
+import CategoryEditForm from './pages/CategoryEditForm'; // Import CategoryEditForm
 
-function App() {
+const App = () => {
+  // Check if the user is authenticated by looking for the token in localStorage
+  const isAuthenticated = localStorage.getItem('token') !== null;
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/login" element={<LoginAdmin />} />
+        <Route path="/signup" element={<SignupAdmin />} />
+        <Route
+          path="/admindashboard"
+          element={isAuthenticated ? <AdminDashboardHome /> : <Navigate to="/login" />}
+        />
+        <Route path="/category/*" element={<CategoryRoutes />} />
+      </Routes>
+    </Router>
   );
-}
+};
+
+const CategoryRoutes = () => (
+  <Routes>
+    <Route path="/" element={<CategoryList />} />
+    <Route path="add" element={<CategoryForm />} />
+    <Route path="edit/:id" element={<CategoryEditForm />} /> {/* Use CategoryEditForm for editing */}
+  </Routes>
+);
 
 export default App;

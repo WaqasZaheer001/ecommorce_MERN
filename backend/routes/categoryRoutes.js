@@ -17,8 +17,8 @@ router.get('/', async (req, res) => {
 // Create a new category
 router.post('/create', isAdmin, async (req, res) => {
   try {
-    const { name, description } = req.body;
-    const category = new Category({ name, description });
+    const { name, description, image } = req.body;
+    const category = new Category({ name, description, image });
     await category.save();
     res.status(201).json(category);
   } catch (err) {
@@ -31,8 +31,12 @@ router.post('/create', isAdmin, async (req, res) => {
 router.put('/:id', isAdmin, async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, description } = req.body;
-    const updatedCategory = await Category.findByIdAndUpdate(id, { name, description }, { new: true });
+    const { name, description, image } = req.body;
+    const updatedCategory = await Category.findByIdAndUpdate(
+      id,
+      { name, description, image },
+      { new: true }
+    );
     if (!updatedCategory) {
       return res.status(404).json({ message: 'Category not found' });
     }
